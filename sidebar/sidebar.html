@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>OpenVidu Meet</title>
+    <link rel="stylesheet" href="sidebar.css" />
+  </head>
+  <body>
+    <div class="header">
+      <div class="header-title">
+        <img src="../icons/icon.svg" class="header-icon" alt="" />
+        <span>OpenVidu Meet</span>
+      </div>
+      <div class="header-actions">
+        <button id="refresh-btn" title="Refresh rooms" class="icon-btn">&#x21BB;</button>
+        <button id="settings-btn" title="Settings" class="icon-btn">&#x2699;</button>
+      </div>
+    </div>
+
+    <div id="status-message" class="status-message" role="status" aria-live="polite"></div>
+
+    <ul id="rooms-list" class="rooms-list" role="list" aria-label="Available rooms"></ul>
+
+    <div id="empty-state" class="empty-state hidden">
+      <p>No rooms found.</p>
+      <p class="hint">Rooms are listed once your OpenVidu Meet server is configured and rooms exist.</p>
+    </div>
+
+    <script src="sidebar.js"></script>
+  </body>
+</html>

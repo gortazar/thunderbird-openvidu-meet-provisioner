@@ -1,0 +1,223 @@
+/* =========================================================
+   Options page – OpenVidu Meet Provisioner
+   ========================================================= */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f5;
+  color: #18181b;
+  line-height: 1.5;
+}
+
+.page-wrapper {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 32px 24px 48px;
+}
+
+/* ---- Header ---- */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.logo {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: #18181b;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 13px;
+  color: #71717a;
+}
+
+/* ---- Fieldsets ---- */
+fieldset {
+  border: 1px solid #d4d4d8;
+  border-radius: 8px;
+  padding: 16px 20px 20px;
+  margin: 0 0 20px;
+  background: #fff;
+}
+
+legend {
+  font-weight: 600;
+  font-size: 13px;
+  padding: 0 6px;
+  color: #52525b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ---- Form groups ---- */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #27272a;
+}
+
+.required {
+  color: #dc2626;
+  margin-left: 2px;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="password"] {
+  display: block;
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #d4d4d8;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  background: #fafafa;
+  color: #18181b;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+input[type="text"]:focus,
+input[type="url"]:focus,
+input[type="password"]:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background: #fff;
+}
+
+input[type="text"].invalid,
+input[type="url"].invalid {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.field-hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #71717a;
+  line-height: 1.4;
+}
+
+.field-hint code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 11px;
+  background: #f4f4f5;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* ---- Actions ---- */
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+button {
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+button[type="submit"] {
+  background: #2563eb;
+  color: #fff;
+  border: 1px solid #2563eb;
+}
+
+button[type="submit"]:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+button[type="button"] {
+  background: #fff;
+  color: #3f3f46;
+  border: 1px solid #d4d4d8;
+}
+
+button[type="button"]:hover {
+  background: #f4f4f5;
+  border-color: #a1a1aa;
+}
+
+.save-status {
+  font-size: 13px;
+}
+
+.save-status.success {
+  color: #16a34a;
+}
+
+.save-status.error {
+  color: #dc2626;
+}
+
+/* ---- Help section ---- */
+.help-section {
+  margin-top: 36px;
+  padding-top: 24px;
+  border-top: 1px solid #d4d4d8;
+}
+
+.help-section h2 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.help-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 16px 0 4px;
+}
+
+.help-section p {
+  font-size: 13px;
+  color: #3f3f46;
+  margin: 0 0 8px;
+}
+
+.help-section a {
+  color: #2563eb;
+  text-decoration: none;
+}
+
+.help-section a:hover {
+  text-decoration: underline;
+}

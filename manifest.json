@@ -1,0 +1,37 @@
+{
+  "manifest_version": 2,
+  "name": "OpenVidu Meet Provisioner",
+  "version": "1.0.0",
+  "description": "Integrates OpenVidu Meet videoconference rooms into Thunderbird. Browse available rooms from a deployed OpenVidu Meet server and join them directly from Thunderbird.",
+  "author": "OpenVidu Meet Provisioner Contributors",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "openvidu-meet-provisioner@thunderbird",
+      "strict_min_version": "78.0"
+    }
+  },
+  "permissions": [
+    "storage",
+    "tabs",
+    "<all_urls>"
+  ],
+  "sidebar_action": {
+    "default_title": "OpenVidu Meet",
+    "default_panel": "sidebar/sidebar.html",
+    "default_icon": {
+      "32": "icons/icon.svg",
+      "64": "icons/icon.svg"
+    }
+  },
+  "options_ui": {
+    "page": "options/options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "icons": {
+    "32": "icons/icon.svg",
+    "64": "icons/icon.svg"
+  }
+}
