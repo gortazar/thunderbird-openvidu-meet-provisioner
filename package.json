@@ -1,0 +1,47 @@
+{
+  "name": "openvidu-meet-provisioner",
+  "version": "1.0.0",
+  "description": "Thunderbird extension for OpenVidu Meet videoconference rooms",
+  "private": true,
+  "scripts": {
+    "test": "node_modules/.bin/jest --coverage",
+    "test:unit": "node_modules/.bin/jest --testPathPattern=tests/unit",
+    "test:integration": "node_modules/.bin/jest --testPathPattern=tests/integration",
+    "test:security": "node_modules/.bin/jest --testPathPattern=tests/security",
+    "test:e2e": "node_modules/.bin/jest --testPathPattern=tests/e2e"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "projects": [
+      {
+        "displayName": "unit",
+        "testMatch": ["<rootDir>/tests/unit/**/*.test.js"],
+        "testEnvironment": "node",
+        "setupFiles": ["<rootDir>/tests/setup.js"]
+      },
+      {
+        "displayName": "integration",
+        "testMatch": ["<rootDir>/tests/integration/**/*.test.js"],
+        "testEnvironment": "node",
+        "setupFiles": ["<rootDir>/tests/setup.js"]
+      },
+      {
+        "displayName": "security",
+        "testMatch": ["<rootDir>/tests/security/**/*.test.js"],
+        "testEnvironment": "node",
+        "setupFiles": ["<rootDir>/tests/setup.js"]
+      },
+      {
+        "displayName": "e2e",
+        "testMatch": ["<rootDir>/tests/e2e/**/*.test.js"],
+        "testEnvironment": "jsdom",
+        "setupFiles": ["<rootDir>/tests/setup.js"]
+      }
+    ],
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": ["src/lib/**/*.js"]
+  }
+}
