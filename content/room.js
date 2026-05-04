@@ -1,4 +1,4 @@
-/* global browser */
+/* global browser, sanitizeServerUrl, buildRoomUrl */
 
 "use strict";
 
@@ -11,45 +11,8 @@ const rawServerUrl = (params.get("serverUrl") || "").replace(/\/$/, "");
 const roomName = params.get("room") || "";
 const participantName = params.get("participantName") || "Guest";
 
-// ---------------------------------------------------------------
-// Validate the server URL
-//
-// Only allow http:// and https:// schemes to prevent javascript:
-// or data: URIs from being injected via URL parameters.
-// ---------------------------------------------------------------
-
-/**
- * Returns the sanitised server URL if the scheme is http(s), or null.
- * @param {string} url
- * @returns {string|null}
- */
-function sanitizeServerUrl(url) {
-  if (!url) return null;
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
-      return null;
-    }
-    // Re-serialize to strip any unexpected components.
-    return parsed.origin;
-  } catch (_) {
-    return null;
-  }
-}
-
+// Validate server URL using lib (http/https only – prevents injection)
 const serverUrl = sanitizeServerUrl(rawServerUrl);
-
-// ---------------------------------------------------------------
-// Build the room URL
-//
-// OpenVidu Meet uses hash-based routing for room navigation.
-// The canonical join URL is:  https://your-domain/#/room-name
-// ---------------------------------------------------------------
-
-function buildRoomUrl(base, room) {
-  // Use hash routing which is the default for OpenVidu Meet.
-  return base + "/#/" + encodeURIComponent(room);
-}
 
 // ---------------------------------------------------------------
 // Wire up page elements
@@ -118,3 +81,4 @@ document.getElementById("close-btn").addEventListener("click", () => {
     if (tab) browser.tabs.remove(tab.id);
   });
 });
+

@@ -1,9 +1,9 @@
-/* global browser */
+/* global browser, isRoomOpen, participantLabel, sortRooms, fetchRooms */
 
 "use strict";
 
 // ---------------------------------------------------------------
-// Helpers
+// Settings
 // ---------------------------------------------------------------
 
 /** Return settings from local storage with sensible defaults. */
@@ -14,67 +14,6 @@ async function getSettings() {
     apiSecret: "",
     participantName: "",
   });
-}
-
-/**
- * Fetch the list of rooms from the OpenVidu Meet REST API.
- *
- * OpenVidu Meet exposes  GET /openvidu/api/rooms
- * The response may be wrapped as  { content: [...] }  or  { rooms: [...] }
- * or it may be a plain array.  We handle all three forms.
- *
- * Authentication uses HTTP Basic Auth with the API key / secret pair.
- */
-async function fetchRooms(serverUrl, apiKey, apiSecret) {
-  const url = serverUrl.replace(/\/$/, "") + "/openvidu/api/rooms";
-  const headers = {};
-  if (apiKey && apiSecret) {
-    headers["Authorization"] =
-      "Basic " + btoa(apiKey + ":" + apiSecret);
-  }
-
-  const response = await fetch(url, { headers });
-  if (!response.ok) {
-    throw new Error("HTTP " + response.status + " – " + response.statusText);
-  }
-
-  const data = await response.json();
-
-  // Normalise to a plain array regardless of the server response shape.
-  if (Array.isArray(data)) {
-    return data;
-  }
-  if (Array.isArray(data.content)) {
-    return data.content;
-  }
-  if (Array.isArray(data.rooms)) {
-    return data.rooms;
-  }
-  return [];
-}
-
-/**
- * Determine whether a room is "open" (has active participants).
- * Different versions of the API surface this differently.
- */
-function isRoomOpen(room) {
-  const count =
-    room.numParticipants ??
-    room.num_participants ??
-    room.participantCount ??
-    0;
-  return count > 0 || room.activeRecording === true;
-}
-
-/** Human-readable participant count label. */
-function participantLabel(room) {
-  const count =
-    room.numParticipants ??
-    room.num_participants ??
-    room.participantCount ??
-    null;
-  if (count === null) return null;
-  return count + " participant" + (count !== 1 ? "s" : "");
 }
 
 // ---------------------------------------------------------------
@@ -151,16 +90,16 @@ async function loadRooms() {
 
   if (!settings.serverUrl) {
     setStatus(
-      "Please configure the OpenVidu Meet server URL in Settings (⚙).",
+      "Please configure the OpenVidu Meet server URL in Settings (\u2699).",
       "warning"
     );
     return;
   }
 
-  setStatus("Loading rooms…", "loading");
+  setStatus("Loading rooms\u2026", "loading");
 
   try {
-    const rooms = await fetchRooms(
+    const rawRooms = await fetchRooms(
       settings.serverUrl,
       settings.apiKey,
       settings.apiSecret
@@ -168,22 +107,13 @@ async function loadRooms() {
 
     clearStatus();
 
-    if (rooms.length === 0) {
+    if (rawRooms.length === 0) {
       showEmptyState(true);
       return;
     }
 
     // Sort: open rooms first, then alphabetically within each group
-    rooms.sort((a, b) => {
-      const aOpen = isRoomOpen(a) ? 0 : 1;
-      const bOpen = isRoomOpen(b) ? 0 : 1;
-      if (aOpen !== bOpen) return aOpen - bOpen;
-      const aName = (a.name || a.id || "").toLowerCase();
-      const bName = (b.name || b.id || "").toLowerCase();
-      return aName.localeCompare(bName);
-    });
-
-    rooms.forEach((room) => {
+    sortRooms(rawRooms).forEach((room) => {
       listEl.appendChild(buildRoomItem(room, settings));
     });
   } catch (err) {
@@ -238,3 +168,4 @@ window.addEventListener("unload", () => {
 
 // Initial load
 loadRooms();
+

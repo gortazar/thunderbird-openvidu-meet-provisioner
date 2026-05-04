@@ -109,8 +109,9 @@ input[type="text"]:focus,
 input[type="url"]:focus,
 input[type="password"]:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  /* Thunderbird-blue focus ring */
+  border-color: #0060df;
+  box-shadow: 0 0 0 3px rgba(0, 96, 223, 0.18);
   background: #fff;
 }
 
@@ -155,14 +156,15 @@ button {
 }
 
 button[type="submit"] {
-  background: #2563eb;
+  /* Thunderbird primary blue */
+  background: #0060df;
   color: #fff;
-  border: 1px solid #2563eb;
+  border: 1px solid #0060df;
 }
 
 button[type="submit"]:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: #0250bb;
+  border-color: #0250bb;
 }
 
 button[type="button"] {
@@ -214,7 +216,7 @@ button[type="button"]:hover {
 }
 
 .help-section a {
-  color: #2563eb;
+  color: #0060df;
   text-decoration: none;
 }
 

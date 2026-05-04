@@ -1,5 +1,7 @@
 /* =========================================================
    Room embedding page – OpenVidu Meet Provisioner
+   Thunderbird-compatible light theme using CSS variables
+   that Thunderbird itself sets when hosting the content tab.
    ========================================================= */
 
 *, *::before, *::after {
@@ -14,22 +16,25 @@ html, body {
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 13px;
-  background: #1a1a2e;
-  color: #fff;
+  /* Light background matching Thunderbird content area */
+  background: var(--layout-background-1, #f9f9fb);
+  color: var(--layout-color-1, #15141a);
   display: flex;
   flex-direction: column;
 }
 
-/* ---- Toolbar ---- */
+/* ---- Toolbar — mirrors Thunderbird's message-view toolbar ---- */
 .toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 6px 12px;
-  background: #0d1117;
-  border-bottom: 1px solid #30363d;
+  padding: 5px 10px;
+  /* Thunderbird chrome-area colour */
+  background: var(--layout-background-3, #ededf0);
+  border-bottom: 1px solid var(--splitter-color, #cfcfd8);
+  color: var(--layout-color-1, #15141a);
   flex-shrink: 0;
-  height: 38px;
+  height: 36px;
 }
 
 .toolbar-left {
@@ -46,7 +51,7 @@ html, body {
 .room-title {
   font-weight: 600;
   font-size: 13px;
-  color: #c9d1d9;
+  color: var(--layout-color-1, #15141a);
 }
 
 .toolbar-right {
@@ -54,21 +59,28 @@ html, body {
   gap: 6px;
 }
 
+/* Thunderbird-style toolbar buttons (secondary/ghost style) */
 .toolbar-btn {
   background: none;
-  border: 1px solid #30363d;
+  border: 1px solid var(--button-border-color, #cfcfd8);
   border-radius: 4px;
-  color: #c9d1d9;
+  color: var(--layout-color-1, #15141a);
   cursor: pointer;
   font-size: 12px;
+  font-family: inherit;
   padding: 3px 10px;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
 }
 
 .toolbar-btn:hover {
-  background: #21262d;
-  border-color: #58a6ff;
-  color: #58a6ff;
+  /* Thunderbird primary-blue tint on hover */
+  background: rgba(0, 96, 223, 0.08);
+  border-color: #0060df;
+  color: #0060df;
+}
+
+.toolbar-btn:active {
+  background: rgba(0, 96, 223, 0.15);
 }
 
 /* ---- Frame container ---- */
@@ -85,11 +97,11 @@ html, body {
   display: block;
 }
 
-/* ---- Error overlay ---- */
+/* ---- Error overlay (light-theme, matches Thunderbird message errors) ---- */
 .error-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(13, 17, 23, 0.95);
+  background: rgba(249, 249, 251, 0.97);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -103,26 +115,33 @@ html, body {
   max-width: 480px;
   text-align: center;
   padding: 32px;
+  background: var(--layout-background-1, #ffffff);
+  border: 1px solid var(--splitter-color, #cfcfd8);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .error-box h2 {
   margin: 0 0 12px;
-  font-size: 18px;
-  color: #f85149;
+  font-size: 17px;
+  /* Thunderbird error red */
+  color: #d70022;
 }
 
 .error-box p {
   margin: 8px 0;
-  color: #8b949e;
+  color: #5b5b66;
   font-size: 13px;
   line-height: 1.5;
 }
 
 .error-box a {
-  color: #58a6ff;
+  /* Thunderbird link blue */
+  color: #0060df;
   text-decoration: none;
 }
 
 .error-box a:hover {
   text-decoration: underline;
 }
+

@@ -125,11 +125,11 @@ body {
 }
 
 .room-item:hover {
-  background: var(--listbox-focused-selected-color, rgba(0, 102, 204, 0.08));
+  background: rgba(0, 96, 223, 0.07);
 }
 
 .room-item:active {
-  background: var(--listbox-focused-selected-color, rgba(0, 102, 204, 0.15));
+  background: rgba(0, 96, 223, 0.13);
 }
 
 /* Closed room name – normal weight */
@@ -168,13 +168,14 @@ body {
 }
 
 .badge-open {
-  background: #d4edda;
-  color: #155724;
+  /* Thunderbird success green */
+  background: #d0ffd8;
+  color: #006613;
 }
 
 .badge-closed {
-  background: #e9ecef;
-  color: #6c757d;
+  background: #e4e4e7;
+  color: #52525b;
 }
 
 /* ---- Empty state ---- */
