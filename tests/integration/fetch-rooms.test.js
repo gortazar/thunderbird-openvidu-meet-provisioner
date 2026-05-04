@@ -106,6 +106,21 @@ describe("fetchRooms() – response normalisation", () => {
     global.fetch.mockResolvedValue(mockResponse({ data: rooms }));
     await expect(fetchRooms("https://meet.example.com")).resolves.toEqual([]);
   });
+
+  test("returns empty array when server responds with JSON null", async () => {
+    global.fetch.mockResolvedValue(mockResponse(null));
+    await expect(fetchRooms("https://meet.example.com")).resolves.toEqual([]);
+  });
+
+  test("returns empty array when server responds with a JSON number", async () => {
+    global.fetch.mockResolvedValue(mockResponse(42));
+    await expect(fetchRooms("https://meet.example.com")).resolves.toEqual([]);
+  });
+
+  test("returns empty array when server responds with a JSON string", async () => {
+    global.fetch.mockResolvedValue(mockResponse("ok"));
+    await expect(fetchRooms("https://meet.example.com")).resolves.toEqual([]);
+  });
 });
 
 // ─── Error handling ────────────────────────────────────────────────────────

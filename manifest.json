@@ -13,7 +13,8 @@
   "permissions": [
     "storage",
     "tabs",
-    "<all_urls>"
+    "http://*/*",
+    "https://*/*"
   ],
   "sidebar_action": {
     "default_title": "OpenVidu Meet",

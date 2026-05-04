@@ -1,4 +1,4 @@
-/* global browser */
+/* global browser, sanitizeServerUrl, normalizeRoomsResponse */
 
 "use strict";
 
@@ -61,12 +61,14 @@ function validateForm() {
     return false;
   }
 
-  try {
-    new URL(url);
-  } catch (_) {
+  // Only accept http:// or https:// – reuse the same guard used at embed-time.
+  if (!sanitizeServerUrl(url)) {
     serverUrlEl.classList.add("invalid");
     serverUrlEl.focus();
-    setStatus("Please enter a valid URL (e.g. https://meet.example.com).", "error");
+    setStatus(
+      "Please enter a valid https:// or http:// URL (e.g. https://meet.example.com).",
+      "error"
+    );
     return false;
   }
 
@@ -133,13 +135,11 @@ getEl("test-btn").addEventListener("click", async () => {
 
     if (response.ok) {
       const data = await response.json();
-      const rooms =
-        (Array.isArray(data) ? data : null) ||
-        data.content ||
-        data.rooms ||
-        [];
+      // normalizeRoomsResponse handles plain arrays, { content:[…] },
+      // { rooms:[…] }, null, and any other unexpected shape safely.
+      const rooms = normalizeRoomsResponse(data);
       setStatus(
-        "✓ Connected – " + rooms.length + " room(s) found",
+        "\u2713 Connected \u2013 " + rooms.length + " room(s) found",
         "success",
         5000
       );

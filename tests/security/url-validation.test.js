@@ -139,3 +139,34 @@ describe("sanitizeServerUrl() – safe values preserved correctly", () => {
     expect(result).toBe("https://meet.example.com");
   });
 });
+
+// ─── options validateForm equivalent – scheme guard (mirrors options.js) ──
+//
+// options.js now calls sanitizeServerUrl() instead of bare new URL(),
+// so these same cases must be rejected there too.
+
+describe("sanitizeServerUrl() – options form scheme guard", () => {
+  test("rejects ftp:// (not a browser-embeddable scheme)", () => {
+    expect(sanitizeServerUrl("ftp://files.example.com")).toBeNull();
+  });
+
+  test("rejects file:// (local file access)", () => {
+    expect(sanitizeServerUrl("file:///etc/passwd")).toBeNull();
+  });
+
+  test("rejects javascript: pseudo-scheme", () => {
+    expect(sanitizeServerUrl("javascript:alert(1)")).toBeNull();
+  });
+
+  test("rejects data: URI", () => {
+    expect(sanitizeServerUrl("data:text/html,<h1>hi</h1>")).toBeNull();
+  });
+
+  test("accepts https:// – valid server URL", () => {
+    expect(sanitizeServerUrl("https://meet.example.com")).not.toBeNull();
+  });
+
+  test("accepts http:// – valid local/dev server URL", () => {
+    expect(sanitizeServerUrl("http://localhost:3000")).not.toBeNull();
+  });
+});

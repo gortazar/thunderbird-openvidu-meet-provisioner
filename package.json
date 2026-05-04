@@ -4,11 +4,11 @@
   "description": "Thunderbird extension for OpenVidu Meet videoconference rooms",
   "private": true,
   "scripts": {
-    "test": "jest --coverage",
-    "test:unit": "jest tests/unit --testPathPattern=tests/unit",
-    "test:integration": "jest tests/integration --testPathPattern=tests/integration",
-    "test:security": "jest tests/security --testPathPattern=tests/security",
-    "test:e2e": "jest tests/e2e --testPathPattern=tests/e2e"
+    "test": "node_modules/.bin/jest --coverage",
+    "test:unit": "node_modules/.bin/jest --testPathPattern=tests/unit",
+    "test:integration": "node_modules/.bin/jest --testPathPattern=tests/integration",
+    "test:security": "node_modules/.bin/jest --testPathPattern=tests/security",
+    "test:e2e": "node_modules/.bin/jest --testPathPattern=tests/e2e"
   },
   "devDependencies": {
     "jest": "^29.7.0",
