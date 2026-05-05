@@ -21,7 +21,7 @@ describe("isRoomOpen()", () => {
     expect(isRoomOpen({ roomId: "r", status: "active_meeting" })).toBe(true);
   });
 
-  test("returns false when status is 'open' (open but no active meeting)", () => {
+  test("returns false when status is 'open' (room available but no meeting active)", () => {
     expect(isRoomOpen({ roomId: "r", status: "open" })).toBe(false);
   });
 
