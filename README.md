@@ -45,8 +45,7 @@ After installation the settings page opens automatically.  You can also reach it
 | Setting | Description |
 |---|---|
 | **Server URL** | Base URL of your OpenVidu Meet deployment, e.g. `https://meet.example.com`. |
-| **API Key** | LiveKit / OpenVidu API key (admin credentials). Used to authenticate the REST `GET /api/v1/rooms` call. |
-| **API Secret** | LiveKit / OpenVidu API secret paired with the key above. |
+| **API Key** | OpenVidu Meet API key (admin credentials). Sent as the `X-API-KEY` header to authenticate REST API calls. |
 | **Your display name** | The name shown to other participants when you join a room. Defaults to "Guest". |
 
 All settings are stored locally inside Thunderbird and are never transmitted anywhere other than your configured server.

@@ -84,7 +84,7 @@ getEl("settings-form").addEventListener("submit", async (e) => {
   if (!validateForm()) return;
 
   const settings = {
-    serverUrl: getEl("server-url").value.trim().replace(/\/$/, ""),
+    serverUrl: sanitizeServerUrl(getEl("server-url").value.trim()) || "",
     apiKey: getEl("api-key").value.trim(),
     participantName: getEl("participant-name").value.trim(),
   };
@@ -114,7 +114,10 @@ getEl("server-url").addEventListener("input", () => {
 getEl("test-btn").addEventListener("click", async () => {
   if (!validateForm()) return;
 
-  const serverUrl = getEl("server-url").value.trim().replace(/\/$/, "");
+  const rawUrl = getEl("server-url").value.trim();
+  // Use sanitizeServerUrl to strip path/query/fragment and get the clean origin,
+  // matching the validation already performed in validateForm().
+  const serverUrl = sanitizeServerUrl(rawUrl);
   const apiKey = getEl("api-key").value.trim();
 
   setStatus("Testing connection…", "");

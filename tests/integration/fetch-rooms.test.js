@@ -34,7 +34,7 @@ beforeEach(() => {
 describe("fetchRooms() – request construction", () => {
   test("calls the correct rooms endpoint", async () => {
     global.fetch.mockResolvedValue(mockResponse([]));
-    await fetchRooms("https://meet.example.com", "", "");
+    await fetchRooms("https://meet.example.com", "");
     expect(global.fetch).toHaveBeenCalledWith(
       "https://meet.example.com/api/v1/rooms",
       expect.any(Object)
@@ -43,7 +43,7 @@ describe("fetchRooms() – request construction", () => {
 
   test("strips trailing slash from serverUrl before appending the path", async () => {
     global.fetch.mockResolvedValue(mockResponse([]));
-    await fetchRooms("https://meet.example.com/", "", "");
+    await fetchRooms("https://meet.example.com/", "");
     expect(global.fetch).toHaveBeenCalledWith(
       "https://meet.example.com/api/v1/rooms",
       expect.any(Object)
