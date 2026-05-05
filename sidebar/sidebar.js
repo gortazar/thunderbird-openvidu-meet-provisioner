@@ -8,11 +8,14 @@
 
 /** Return settings from local storage with sensible defaults. */
 async function getSettings() {
-  return browser.storage.local.get({
+  const settings = await browser.storage.local.get({
     serverUrl: "",
     apiKey: "",
     participantName: "",
   });
+  // Remove legacy apiSecret left over from older installations.
+  await browser.storage.local.remove("apiSecret");
+  return settings;
 }
 
 // ---------------------------------------------------------------
