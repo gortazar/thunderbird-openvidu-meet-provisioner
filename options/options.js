@@ -9,7 +9,6 @@
 const DEFAULT_SETTINGS = {
   serverUrl: "",
   apiKey: "",
-  apiSecret: "",
   participantName: "",
 };
 
@@ -39,7 +38,6 @@ async function loadSettings() {
     const settings = await browser.storage.local.get(DEFAULT_SETTINGS);
     getEl("server-url").value = settings.serverUrl;
     getEl("api-key").value = settings.apiKey;
-    getEl("api-secret").value = settings.apiSecret;
     getEl("participant-name").value = settings.participantName;
   } catch (err) {
     setStatus("Could not load settings: " + err.message, "error");
@@ -88,7 +86,6 @@ getEl("settings-form").addEventListener("submit", async (e) => {
   const settings = {
     serverUrl: getEl("server-url").value.trim().replace(/\/$/, ""),
     apiKey: getEl("api-key").value.trim(),
-    apiSecret: getEl("api-secret").value.trim(),
     participantName: getEl("participant-name").value.trim(),
   };
 
@@ -119,14 +116,13 @@ getEl("test-btn").addEventListener("click", async () => {
 
   const serverUrl = getEl("server-url").value.trim().replace(/\/$/, "");
   const apiKey = getEl("api-key").value.trim();
-  const apiSecret = getEl("api-secret").value.trim();
 
   setStatus("Testing connection…", "");
 
   try {
     const headers = {};
-    if (apiKey && apiSecret) {
-      headers["Authorization"] = "Basic " + btoa(apiKey + ":" + apiSecret);
+    if (apiKey) {
+      headers["X-API-KEY"] = apiKey;
     }
 
     const response = await fetch(serverUrl + "/openvidu/api/rooms", {

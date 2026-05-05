@@ -50,33 +50,25 @@ describe("fetchRooms() – request construction", () => {
     );
   });
 
-  test("sends Basic Authorization header when apiKey and apiSecret are provided", async () => {
+  test("sends X-API-KEY header when apiKey is provided", async () => {
     global.fetch.mockResolvedValue(mockResponse([]));
-    await fetchRooms("https://meet.example.com", "myKey", "mySecret");
+    await fetchRooms("https://meet.example.com", "myKey");
     const [, options] = global.fetch.mock.calls[0];
-    const expected = "Basic " + btoa("myKey:mySecret");
-    expect(options.headers["Authorization"]).toBe(expected);
+    expect(options.headers["X-API-KEY"]).toBe("myKey");
   });
 
-  test("does NOT add an Authorization header when apiKey is empty", async () => {
+  test("does NOT add an X-API-KEY header when apiKey is empty", async () => {
     global.fetch.mockResolvedValue(mockResponse([]));
-    await fetchRooms("https://meet.example.com", "", "mySecret");
+    await fetchRooms("https://meet.example.com", "");
     const [, options] = global.fetch.mock.calls[0];
-    expect(options.headers).not.toHaveProperty("Authorization");
+    expect(options.headers).not.toHaveProperty("X-API-KEY");
   });
 
-  test("does NOT add an Authorization header when apiSecret is empty", async () => {
-    global.fetch.mockResolvedValue(mockResponse([]));
-    await fetchRooms("https://meet.example.com", "myKey", "");
-    const [, options] = global.fetch.mock.calls[0];
-    expect(options.headers).not.toHaveProperty("Authorization");
-  });
-
-  test("does NOT add an Authorization header when both credentials are absent", async () => {
+  test("does NOT add an X-API-KEY header when apiKey is absent", async () => {
     global.fetch.mockResolvedValue(mockResponse([]));
     await fetchRooms("https://meet.example.com");
     const [, options] = global.fetch.mock.calls[0];
-    expect(options.headers).not.toHaveProperty("Authorization");
+    expect(options.headers).not.toHaveProperty("X-API-KEY");
   });
 });
 
@@ -130,7 +122,7 @@ describe("fetchRooms() – error handling", () => {
     global.fetch.mockResolvedValue(
       mockResponse(null, { status: 401, statusText: "Unauthorized" })
     );
-    await expect(fetchRooms("https://meet.example.com", "bad", "creds")).rejects.toThrow(
+    await expect(fetchRooms("https://meet.example.com", "bad")).rejects.toThrow(
       "HTTP 401"
     );
   });

@@ -81,15 +81,14 @@ function sortRooms(rooms) {
  * Fetch the list of rooms from the OpenVidu Meet REST API.
  *
  * @param {string} serverUrl  - Base URL of the OpenVidu Meet server
- * @param {string} [apiKey]   - LiveKit / OpenVidu API key
- * @param {string} [apiSecret]- LiveKit / OpenVidu API secret
+ * @param {string} [apiKey]   - OpenVidu Meet API key (sent as X-API-KEY header)
  * @returns {Promise<Array>}
  */
-async function fetchRooms(serverUrl, apiKey, apiSecret) {
+async function fetchRooms(serverUrl, apiKey) {
   const url = serverUrl.replace(/\/$/, "") + "/openvidu/api/rooms";
   const headers = {};
-  if (apiKey && apiSecret) {
-    headers["Authorization"] = "Basic " + btoa(apiKey + ":" + apiSecret);
+  if (apiKey) {
+    headers["X-API-KEY"] = apiKey;
   }
 
   const response = await fetch(url, { headers });
