@@ -1,6 +1,6 @@
 {
   "name": "openvidu-meet-provisioner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Thunderbird extension for OpenVidu Meet videoconference rooms",
   "private": true,
   "scripts": {
