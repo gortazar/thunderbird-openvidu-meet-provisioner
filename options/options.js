@@ -125,7 +125,7 @@ getEl("test-btn").addEventListener("click", async () => {
       headers["X-API-KEY"] = apiKey;
     }
 
-    const response = await fetch(serverUrl + "/openvidu/api/rooms", {
+    const response = await fetch(serverUrl + "/api/v1/rooms", {
       headers,
     });
 

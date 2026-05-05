@@ -36,7 +36,7 @@ describe("fetchRooms() – request construction", () => {
     global.fetch.mockResolvedValue(mockResponse([]));
     await fetchRooms("https://meet.example.com", "", "");
     expect(global.fetch).toHaveBeenCalledWith(
-      "https://meet.example.com/openvidu/api/rooms",
+      "https://meet.example.com/api/v1/rooms",
       expect.any(Object)
     );
   });
@@ -45,7 +45,7 @@ describe("fetchRooms() – request construction", () => {
     global.fetch.mockResolvedValue(mockResponse([]));
     await fetchRooms("https://meet.example.com/", "", "");
     expect(global.fetch).toHaveBeenCalledWith(
-      "https://meet.example.com/openvidu/api/rooms",
+      "https://meet.example.com/api/v1/rooms",
       expect.any(Object)
     );
   });
