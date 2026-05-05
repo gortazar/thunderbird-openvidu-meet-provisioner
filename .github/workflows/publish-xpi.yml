@@ -1,9 +1,11 @@
 name: Publish XPI
 
 on:
-  release:
+  workflow_run:
+    workflows:
+      - Release
     types:
-      - created
+      - completed
 
 jobs:
   build-and-upload:
