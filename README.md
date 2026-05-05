@@ -45,7 +45,7 @@ After installation the settings page opens automatically.  You can also reach it
 | Setting | Description |
 |---|---|
 | **Server URL** | Base URL of your OpenVidu Meet deployment, e.g. `https://meet.example.com`. |
-| **API Key** | LiveKit / OpenVidu API key (admin credentials). Used to authenticate the REST `GET /openvidu/api/rooms` call. |
+| **API Key** | LiveKit / OpenVidu API key (admin credentials). Used to authenticate the REST `GET /api/v1/rooms` call. |
 | **API Secret** | LiveKit / OpenVidu API secret paired with the key above. |
 | **Your display name** | The name shown to other participants when you join a room. Defaults to "Guest". |
 
@@ -55,7 +55,7 @@ All settings are stored locally inside Thunderbird and are never transmitted any
 
 1. Open the sidebar: **View → Sidebar → OpenVidu Meet**  
    (or use the keyboard shortcut assigned to that sidebar).
-2. The sidebar lists all rooms returned by `GET /openvidu/api/rooms`.  
+2. The sidebar lists all rooms returned by `GET /api/v1/rooms`.  
    Rooms with active participants are shown **in bold** with a green "Open" badge.
 3. Click a room to join: a new Thunderbird content tab opens with the OpenVidu Meet UI embedded in an `<iframe>`.
 4. Use the **↻** button in the sidebar header to refresh the list manually.
@@ -88,19 +88,25 @@ options/
 The extension calls:
 
 ```
-GET {serverUrl}/openvidu/api/rooms
-Authorization: Basic {base64(apiKey:apiSecret)}
+GET {serverUrl}/api/v1/rooms
+X-API-KEY: {apiKey}
 ```
 
-The response is expected to be one of:
-- A JSON array of room objects
-- `{ "content": [...] }` (OpenVidu Meet 3.x format)
-- `{ "rooms": [...] }` (LiveKit-style format)
+The response is `{ "rooms": [...], "pagination": {...} }`.
 
-Each room object should contain:
-- `name` or `id` – room identifier
-- `numParticipants` / `num_participants` / `participantCount` – current participant count (used to determine "open" status)
-- `activeRecording` (optional) – boolean, also treated as "open"
+Each room object contains:
+- `roomId` – unique room identifier
+- `roomName` – display name of the room
+- `status` – `"open"`, `"active_meeting"`, or `"closed"` (used to determine "open" status)
+
+Legacy response shapes from older API versions are also handled:
+- A JSON array of room objects
+- `{ "content": [...] }` (Spring-Page format)
+
+Legacy room fields are also handled for backwards compatibility:
+- `name` or `id` – legacy room identifier
+- `numParticipants` / `num_participants` / `participantCount` – legacy participant count
+- `activeRecording` (optional) – legacy boolean "open" indicator
 
 ## Embedding
 

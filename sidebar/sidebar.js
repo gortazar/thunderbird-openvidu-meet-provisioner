@@ -42,7 +42,8 @@ function showEmptyState(show) {
 // ---------------------------------------------------------------
 
 function buildRoomItem(room, settings) {
-  const name = room.name || room.id || "(unnamed)";
+  // Support both current API (roomName/roomId) and legacy (name/id)
+  const name = room.roomName || room.name || room.roomId || room.id || "(unnamed)";
   const open = isRoomOpen(room);
   const pLabel = participantLabel(room);
 

@@ -10,12 +10,18 @@
 
 /**
  * Determine whether a room is "open" (has active participants).
- * Handles the three known field names used by different API versions.
+ * Handles field names from different API versions:
+ *   - OpenVidu Meet (current): status === "active_meeting"
+ *   - Legacy/LiveKit variants: numParticipants, num_participants, participantCount
  *
  * @param {object} room - Room object from the API response
  * @returns {boolean}
  */
 function isRoomOpen(room) {
+  // OpenVidu Meet current API: status field
+  if (room.status === "active_meeting") return true;
+
+  // Legacy participant-count fields
   const count =
     room.numParticipants ??
     room.num_participants ??
@@ -71,8 +77,9 @@ function sortRooms(rooms) {
     const aOpen = isRoomOpen(a) ? 0 : 1;
     const bOpen = isRoomOpen(b) ? 0 : 1;
     if (aOpen !== bOpen) return aOpen - bOpen;
-    const aName = (a.name || a.id || "").toLowerCase();
-    const bName = (b.name || b.id || "").toLowerCase();
+    // Support both current API (roomName/roomId) and legacy (name/id)
+    const aName = (a.roomName || a.name || a.roomId || a.id || "").toLowerCase();
+    const bName = (b.roomName || b.name || b.roomId || b.id || "").toLowerCase();
     return aName.localeCompare(bName);
   });
 }
@@ -85,7 +92,7 @@ function sortRooms(rooms) {
  * @returns {Promise<Array>}
  */
 async function fetchRooms(serverUrl, apiKey) {
-  const url = serverUrl.replace(/\/$/, "") + "/openvidu/api/rooms";
+  const url = serverUrl.replace(/\/$/, "") + "/api/v1/rooms";
   const headers = {};
   if (apiKey) {
     headers["X-API-KEY"] = apiKey;

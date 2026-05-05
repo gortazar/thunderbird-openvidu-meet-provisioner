@@ -17,6 +17,18 @@ const {
 // ─── isRoomOpen ────────────────────────────────────────────────────────────
 
 describe("isRoomOpen()", () => {
+  test("returns true when status is 'active_meeting' (OpenVidu Meet API)", () => {
+    expect(isRoomOpen({ roomId: "r", status: "active_meeting" })).toBe(true);
+  });
+
+  test("returns false when status is 'open' (open but no active meeting)", () => {
+    expect(isRoomOpen({ roomId: "r", status: "open" })).toBe(false);
+  });
+
+  test("returns false when status is 'closed'", () => {
+    expect(isRoomOpen({ roomId: "r", status: "closed" })).toBe(false);
+  });
+
   test("returns true when numParticipants > 0", () => {
     expect(isRoomOpen({ name: "r", numParticipants: 3 })).toBe(true);
   });
@@ -182,6 +194,35 @@ describe("sortRooms()", () => {
     ];
     const sorted = sortRooms(rooms);
     expect(sorted[0].id).toBe("a-room");
+  });
+
+  test("uses room.roomName when present (OpenVidu Meet API)", () => {
+    const rooms = [
+      { roomId: "r2", roomName: "Zebra", status: "open" },
+      { roomId: "r1", roomName: "Alpha", status: "open" },
+    ];
+    const sorted = sortRooms(rooms);
+    expect(sorted[0].roomName).toBe("Alpha");
+    expect(sorted[1].roomName).toBe("Zebra");
+  });
+
+  test("uses room.roomId as fallback when room.roomName is absent (OpenVidu Meet API)", () => {
+    const rooms = [
+      { roomId: "z-room", status: "open" },
+      { roomId: "a-room", status: "open" },
+    ];
+    const sorted = sortRooms(rooms);
+    expect(sorted[0].roomId).toBe("a-room");
+  });
+
+  test("active_meeting rooms sort before non-active rooms (OpenVidu Meet API)", () => {
+    const rooms = [
+      { roomId: "r1", roomName: "Alpha", status: "open" },
+      { roomId: "r2", roomName: "Beta", status: "active_meeting" },
+    ];
+    const sorted = sortRooms(rooms);
+    expect(sorted[0].roomName).toBe("Beta");
+    expect(sorted[1].roomName).toBe("Alpha");
   });
 
   test("complex mix: multiple open and closed rooms sorted correctly", () => {
