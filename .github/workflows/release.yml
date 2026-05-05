@@ -36,6 +36,19 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Build XPI package
+        run: |
+          XPI_NAME="openvidu-meet-provisioner-v${{ steps.version.outputs.version }}.xpi"
+          zip -r "$XPI_NAME" \
+            manifest.json \
+            background.js \
+            icons/ \
+            sidebar/ \
+            content/ \
+            options/ \
+            src/
+          echo "xpi_name=$XPI_NAME" >> "$GITHUB_ENV"
+
       - name: Create GitHub release
         if: steps.check.outputs.exists == 'false'
         env:
@@ -43,4 +56,14 @@ jobs:
         run: |
           gh release create "v${{ steps.version.outputs.version }}" \
             --title "v${{ steps.version.outputs.version }}" \
-            --generate-notes
+            --generate-notes \
+            "${{ env.xpi_name }}"
+
+      - name: Upload XPI to existing release
+        if: steps.check.outputs.exists == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "v${{ steps.version.outputs.version }}" \
+            "${{ env.xpi_name }}" \
+            --clobber
