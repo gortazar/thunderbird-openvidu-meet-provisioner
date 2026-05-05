@@ -47,29 +47,14 @@
               type="text"
               id="api-key"
               name="apiKey"
-              placeholder="LIVEKIT_API_KEY"
+              placeholder="your-api-key"
               autocomplete="off"
               spellcheck="false"
             />
             <p class="field-hint">
-              The LiveKit / OpenVidu API key used to authenticate REST calls
-              (admin credentials).
-            </p>
-          </div>
-
-          <div class="form-group">
-            <label for="api-secret">API Secret</label>
-            <input
-              type="password"
-              id="api-secret"
-              name="apiSecret"
-              placeholder="LIVEKIT_API_SECRET"
-              autocomplete="off"
-            />
-            <p class="field-hint">
-              The LiveKit / OpenVidu API secret paired with the key above.
-              Stored locally in Thunderbird – never sent anywhere except your
-              configured server.
+              The OpenVidu Meet API key used to authenticate REST calls.
+              Sent as an <code>X-API-KEY</code> header. Stored locally in
+              Thunderbird – never sent anywhere except your configured server.
             </p>
           </div>
         </fieldset>

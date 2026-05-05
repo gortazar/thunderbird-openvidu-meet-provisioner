@@ -94,18 +94,17 @@ describe("fetchRooms() – credentials not leaked into URL", () => {
   });
 
   test("API key is not present in the request URL", async () => {
-    await fetchRooms("https://meet.example.com", "supersecretkey", "supersecret");
+    await fetchRooms("https://meet.example.com", "supersecretkey");
     const [calledUrl] = global.fetch.mock.calls[0];
     expect(calledUrl).not.toContain("supersecretkey");
-    expect(calledUrl).not.toContain("supersecret");
   });
 
-  test("Authorization header value is not exposed in the URL", async () => {
-    await fetchRooms("https://meet.example.com", "k", "s");
+  test("X-API-KEY header value is not exposed in the URL", async () => {
+    await fetchRooms("https://meet.example.com", "myapikey");
     const [calledUrl, options] = global.fetch.mock.calls[0];
     // Header should exist in options, not URL
-    expect(options.headers["Authorization"]).toMatch(/^Basic /);
-    expect(calledUrl).not.toContain("Basic");
+    expect(options.headers["X-API-KEY"]).toBe("myapikey");
+    expect(calledUrl).not.toContain("myapikey");
   });
 });
 

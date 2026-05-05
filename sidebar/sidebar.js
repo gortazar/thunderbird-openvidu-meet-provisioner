@@ -11,7 +11,6 @@ async function getSettings() {
   return browser.storage.local.get({
     serverUrl: "",
     apiKey: "",
-    apiSecret: "",
     participantName: "",
   });
 }
@@ -101,8 +100,7 @@ async function loadRooms() {
   try {
     const rawRooms = await fetchRooms(
       settings.serverUrl,
-      settings.apiKey,
-      settings.apiSecret
+      settings.apiKey
     );
 
     clearStatus();
