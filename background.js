@@ -7,3 +7,15 @@ browser.runtime.onInstalled.addListener((details) => {
     browser.runtime.openOptionsPage();
   }
 });
+
+// Register the OpenVidu Meet space in the spaces toolbar.
+// Thunderbird requires spaces to be created on every extension startup
+// (they are not persisted between restarts of the background script).
+messenger.spaces
+  .create("openvidu-meet", "sidebar/sidebar.html", {
+    title: "OpenVidu Meet",
+    defaultIcons: "icons/icon.svg",
+  })
+  .catch(() => {
+    // Space already registered (e.g. extension reloaded without Thunderbird restart)
+  });

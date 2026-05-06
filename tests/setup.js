@@ -38,6 +38,18 @@ if (typeof global.browser === "undefined") {
     runtime: {
       getURL: jest.fn((path) => "moz-extension://test-id/" + path),
       openOptionsPage: jest.fn(),
+      onInstalled: { addListener: jest.fn() },
+    },
+  };
+}
+
+// Thunderbird-specific messenger API stub (superset of browser).
+// Provides the spaces API used by background.js to register the extension
+// in the spaces toolbar.
+if (typeof global.messenger === "undefined") {
+  global.messenger = {
+    spaces: {
+      create: jest.fn().mockResolvedValue({ id: 1, name: "openvidu-meet" }),
     },
   };
 }
