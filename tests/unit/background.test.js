@@ -63,7 +63,7 @@ describe("background.js – spaces toolbar registration", () => {
   test("provides a defaultIcons path for the spaces toolbar button", () => {
     loadBackground();
     const [, , props] = messenger.spaces.create.mock.calls[0];
-    expect(props.defaultIcons).toBeTruthy();
+    expect(props.defaultIcons).toBe("icons/openvidu-meet.svg");
   });
 
   test("does not throw when messenger.spaces.create() rejects (duplicate space)", async () => {
