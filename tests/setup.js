@@ -43,9 +43,9 @@ if (typeof global.browser === "undefined") {
   };
 }
 
-// Thunderbird-specific messenger API stub (superset of browser).
-// Provides the spaces API used by background.js to register the extension
-// in the spaces toolbar.
+// Minimal Thunderbird-specific messenger API stub.
+// Provides only the `spaces` API used by background.js to register the
+// extension in the spaces toolbar.
 if (typeof global.messenger === "undefined") {
   global.messenger = {
     spaces: {
