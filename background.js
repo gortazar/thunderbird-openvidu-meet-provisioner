@@ -11,13 +11,20 @@ browser.runtime.onInstalled.addListener((details) => {
 // Register the OpenVidu Meet space in the spaces toolbar.
 // Thunderbird requires spaces to be created on every extension startup
 // (they are not persisted between restarts of the background script).
-if (messenger.spaces && typeof messenger.spaces.create === "function") {
+// The Spaces API was introduced in Thunderbird 100; guard against older builds.
+if (typeof messenger !== "undefined" && typeof messenger.spaces?.create === "function") {
   messenger.spaces
     .create("openvidu-meet", "sidebar/sidebar.html", {
       title: "OpenVidu Meet",
       defaultIcons: "icons/icon.svg",
     })
-    .catch(() => {
-      // Space already registered (e.g. extension reloaded without Thunderbird restart)
+    .catch((err) => {
+      // Thunderbird throws when the space name is already registered.
+      // This is expected when the extension is reloaded in developer mode
+      // without restarting Thunderbird. Any other failure is unexpected
+      // and should be surfaced so the missing toolbar button can be diagnosed.
+      if (!err?.message?.toLowerCase().includes("already exists")) {
+        console.error("[OpenVidu Meet] Failed to register space:", err);
+      }
     });
 }

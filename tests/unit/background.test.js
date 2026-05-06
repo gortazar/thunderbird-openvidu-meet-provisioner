@@ -12,8 +12,10 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 
-/** Load and execute background.js in a sandboxed context. */
-function loadBackground() {
+/** Load and execute background.js in a sandboxed context.
+ *  @param {object} [overrides] - Optional properties to merge into the VM context.
+ */
+function loadBackground(overrides = {}) {
   const src = fs.readFileSync(
     path.resolve(__dirname, "../../background.js"),
     "utf8"
@@ -21,6 +23,8 @@ function loadBackground() {
   const context = vm.createContext({
     browser: global.browser,
     messenger: global.messenger,
+    console: global.console,
+    ...overrides,
   });
   vm.runInContext(src, context);
 }
@@ -63,7 +67,7 @@ describe("background.js – spaces toolbar registration", () => {
   test("provides a defaultIcons path for the spaces toolbar button", () => {
     loadBackground();
     const [, , props] = messenger.spaces.create.mock.calls[0];
-    expect(props.defaultIcons).toBe("icons/openvidu-meet.svg");
+    expect(props.defaultIcons).toBe("icons/icon.svg");
   });
 
   test("does not throw when messenger.spaces.create() rejects (duplicate space)", async () => {
@@ -73,6 +77,59 @@ describe("background.js – spaces toolbar registration", () => {
     expect(() => loadBackground()).not.toThrow();
     // Allow the rejected promise to settle without triggering an unhandledRejection.
     await Promise.resolve();
+  });
+
+  test("logs unexpected errors from spaces.create() to the console", async () => {
+    const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
+    messenger.spaces.create.mockRejectedValueOnce(new Error("Permission denied"));
+    loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining("[OpenVidu Meet]"),
+      expect.any(Error)
+    );
+    consoleError.mockRestore();
+  });
+
+  test("does not log to console for duplicate-space errors", async () => {
+    const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
+    messenger.spaces.create.mockRejectedValueOnce(
+      new Error("A space with name openvidu-meet already exists.")
+    );
+    loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(consoleError).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
+});
+
+// ─── Compatibility – no Spaces API ────────────────────────────────────────
+
+describe("background.js – Spaces API compatibility", () => {
+  test("does not throw when messenger.spaces is absent", () => {
+    expect(() =>
+      loadBackground({ messenger: { /* no spaces property */ } })
+    ).not.toThrow();
+  });
+
+  test("does not call spaces.create() when messenger.spaces is absent", () => {
+    loadBackground({ messenger: {} });
+    expect(messenger.spaces.create).not.toHaveBeenCalled();
+  });
+
+  test("does not throw when messenger itself is undefined", () => {
+    expect(() => loadBackground({ messenger: undefined })).not.toThrow();
+  });
+
+  test("does not call spaces.create() when messenger is undefined", () => {
+    loadBackground({ messenger: undefined });
+    expect(messenger.spaces.create).not.toHaveBeenCalled();
+  });
+
+  test("does not throw when messenger.spaces.create is not a function", () => {
+    expect(() =>
+      loadBackground({ messenger: { spaces: { create: null } } })
+    ).not.toThrow();
   });
 });
 
