@@ -7,7 +7,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "openvidu-meet-provisioner@thunderbird",
-      "strict_min_version": "78.0"
+      "strict_min_version": "128.0"
     }
   },
   "permissions": [
@@ -18,11 +18,7 @@
   ],
   "sidebar_action": {
     "default_title": "OpenVidu Meet",
-    "default_panel": "sidebar/sidebar.html",
-    "default_icon": {
-      "32": "icons/icon.svg",
-      "64": "icons/icon.svg"
-    }
+    "default_panel": "sidebar/sidebar.html"
   },
   "options_ui": {
     "page": "options/options.html",
