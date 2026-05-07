@@ -13,18 +13,22 @@ browser.runtime.onInstalled.addListener((details) => {
 // (they are not persisted between restarts of the background script).
 // The Spaces API was introduced in Thunderbird 100; guard against older builds.
 if (typeof messenger !== "undefined" && typeof messenger.spaces?.create === "function") {
-  messenger.spaces
-    .create("openvidu-meet", "sidebar/sidebar.html", {
-      title: "OpenVidu Meet",
-      defaultIcons: "icons/icon.svg",
-    })
-    .catch((err) => {
-      // Thunderbird throws when the space name is already registered.
-      // This is expected when the extension is reloaded in developer mode
-      // without restarting Thunderbird. Any other failure is unexpected
-      // and should be surfaced so the missing toolbar button can be diagnosed.
-      if (!err?.message?.toLowerCase().includes("already exists")) {
-        console.error("[OpenVidu Meet] Failed to register space:", err);
+  (async () => {
+    try {
+      // Query first to avoid a duplicate-space error when the background
+      // script is reloaded in developer mode without restarting Thunderbird.
+      const existing = await messenger.spaces.query({ name: "openvidu-meet" });
+      if (existing.length === 0) {
+        await messenger.spaces.create("openvidu-meet", "sidebar/sidebar.html", {
+          title: "OpenVidu Meet",
+          defaultIcons: {
+            "16": "icons/icon-16.svg",
+            "32": "icons/icon-32.svg",
+          },
+        });
       }
-    });
+    } catch (err) {
+      console.error("[OpenVidu Meet] Failed to register space:", err);
+    }
+  })();
 }
