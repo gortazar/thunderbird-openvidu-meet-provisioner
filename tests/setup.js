@@ -39,6 +39,7 @@ if (typeof global.browser === "undefined") {
       getURL: jest.fn((path) => "moz-extension://test-id/" + path),
       openOptionsPage: jest.fn(),
       onInstalled: { addListener: jest.fn() },
+      onStartup: { addListener: jest.fn() },
     },
   };
 }
