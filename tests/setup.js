@@ -50,6 +50,7 @@ if (typeof global.messenger === "undefined") {
   global.messenger = {
     spaces: {
       create: jest.fn().mockResolvedValue({ id: 1, name: "openvidu-meet" }),
+      query: jest.fn().mockResolvedValue([]),
     },
   };
 }

@@ -31,20 +31,36 @@ function loadBackground(overrides = {}) {
 
 beforeEach(() => {
   jest.clearAllMocks();
-  // Re-arm the mock so the Promise resolves cleanly on each test run.
+  // Re-arm the mocks so Promises resolve cleanly on each test run.
+  messenger.spaces.query.mockResolvedValue([]);
   messenger.spaces.create.mockResolvedValue({ id: 1, name: "openvidu-meet" });
 });
 
 // ─── Space registration ────────────────────────────────────────────────────
 
 describe("background.js – spaces toolbar registration", () => {
-  test("calls messenger.spaces.create() on startup", () => {
+  test("queries existing spaces before creating", async () => {
     loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu-meet" });
+  });
+
+  test("calls messenger.spaces.create() when no existing space is found", async () => {
+    loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(messenger.spaces.create).toHaveBeenCalledTimes(1);
   });
 
-  test("registers the space with name 'openvidu-meet'", () => {
+  test("skips messenger.spaces.create() when space already exists", async () => {
+    messenger.spaces.query.mockResolvedValue([{ id: 1, name: "openvidu-meet" }]);
     loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(messenger.spaces.create).not.toHaveBeenCalled();
+  });
+
+  test("registers the space with name 'openvidu-meet'", async () => {
+    loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(messenger.spaces.create).toHaveBeenCalledWith(
       "openvidu-meet",
       expect.any(String),
@@ -52,34 +68,37 @@ describe("background.js – spaces toolbar registration", () => {
     );
   });
 
-  test("points the space panel at the sidebar HTML page", () => {
+  test("points the space panel at the sidebar HTML page", async () => {
     loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const [, defaultUrl] = messenger.spaces.create.mock.calls[0];
     expect(defaultUrl).toBe("sidebar/sidebar.html");
   });
 
-  test("sets the space title to 'OpenVidu Meet'", () => {
+  test("sets the space title to 'OpenVidu Meet'", async () => {
     loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const [, , props] = messenger.spaces.create.mock.calls[0];
     expect(props).toMatchObject({ title: "OpenVidu Meet" });
   });
 
-  test("provides a defaultIcons path for the spaces toolbar button", () => {
+  test("provides defaultIcons as an object with 16 and 32 px entries", async () => {
     loadBackground();
+    await new Promise((resolve) => setTimeout(resolve, 0));
     const [, , props] = messenger.spaces.create.mock.calls[0];
-    expect(props.defaultIcons).toBe("icons/icon.svg");
+    expect(props.defaultIcons).toEqual({
+      "16": "icons/icon-16.svg",
+      "32": "icons/icon-32.svg",
+    });
   });
 
-  test("does not throw when messenger.spaces.create() rejects (duplicate space)", async () => {
-    messenger.spaces.create.mockRejectedValueOnce(
-      new Error("Space already exists")
-    );
+  test("does not throw when messenger.spaces.create() rejects", async () => {
+    messenger.spaces.create.mockRejectedValueOnce(new Error("Permission denied"));
     expect(() => loadBackground()).not.toThrow();
-    // Allow the rejected promise to settle without triggering an unhandledRejection.
-    await Promise.resolve();
+    await new Promise((resolve) => setTimeout(resolve, 0));
   });
 
-  test("logs unexpected errors from spaces.create() to the console", async () => {
+  test("logs errors from spaces.create() to the console", async () => {
     const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
     messenger.spaces.create.mockRejectedValueOnce(new Error("Permission denied"));
     loadBackground();
@@ -91,14 +110,15 @@ describe("background.js – spaces toolbar registration", () => {
     consoleError.mockRestore();
   });
 
-  test("does not log to console for duplicate-space errors", async () => {
+  test("logs errors from spaces.query() to the console", async () => {
     const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
-    messenger.spaces.create.mockRejectedValueOnce(
-      new Error("A space with name openvidu-meet already exists.")
-    );
+    messenger.spaces.query.mockRejectedValueOnce(new Error("Query failed"));
     loadBackground();
     await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(consoleError).not.toHaveBeenCalled();
+    expect(consoleError).toHaveBeenCalledWith(
+      expect.stringContaining("[OpenVidu Meet]"),
+      expect.any(Error)
+    );
     consoleError.mockRestore();
   });
 });
@@ -112,8 +132,9 @@ describe("background.js – Spaces API compatibility", () => {
     ).not.toThrow();
   });
 
-  test("does not call spaces.create() when messenger.spaces is absent", () => {
+  test("does not call spaces.create() when messenger.spaces is absent", async () => {
     loadBackground({ messenger: {} });
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(messenger.spaces.create).not.toHaveBeenCalled();
   });
 
@@ -121,8 +142,9 @@ describe("background.js – Spaces API compatibility", () => {
     expect(() => loadBackground({ messenger: undefined })).not.toThrow();
   });
 
-  test("does not call spaces.create() when messenger is undefined", () => {
+  test("does not call spaces.create() when messenger is undefined", async () => {
     loadBackground({ messenger: undefined });
+    await new Promise((resolve) => setTimeout(resolve, 0));
     expect(messenger.spaces.create).not.toHaveBeenCalled();
   });
 
