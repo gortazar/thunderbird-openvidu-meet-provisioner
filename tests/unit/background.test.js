@@ -29,6 +29,18 @@ function loadBackground(overrides = {}) {
   vm.runInContext(src, context);
 }
 
+/** Fire the onStartup listener registered by background.js. */
+async function triggerStartup() {
+  const [listener] = browser.runtime.onStartup.addListener.mock.calls[0];
+  await listener();
+}
+
+/** Fire the onInstalled listener registered by background.js. */
+async function triggerInstall(reason = "install") {
+  const [listener] = browser.runtime.onInstalled.addListener.mock.calls[0];
+  await listener({ reason });
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   // Re-arm the mocks so Promises resolve cleanly on each test run.
@@ -39,28 +51,34 @@ beforeEach(() => {
 // ─── Space registration ────────────────────────────────────────────────────
 
 describe("background.js – spaces toolbar registration", () => {
-  test("queries existing spaces before creating", async () => {
+  test("queries existing spaces before creating (onStartup)", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
+    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu-meet" });
+  });
+
+  test("queries existing spaces before creating (onInstalled)", async () => {
+    loadBackground();
+    await triggerInstall("update");
     expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu-meet" });
   });
 
   test("calls messenger.spaces.create() when no existing space is found", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     expect(messenger.spaces.create).toHaveBeenCalledTimes(1);
   });
 
   test("skips messenger.spaces.create() when space already exists", async () => {
     messenger.spaces.query.mockResolvedValue([{ id: 1, name: "openvidu-meet" }]);
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     expect(messenger.spaces.create).not.toHaveBeenCalled();
   });
 
   test("registers the space with name 'openvidu-meet'", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     expect(messenger.spaces.create).toHaveBeenCalledWith(
       "openvidu-meet",
       expect.any(String),
@@ -70,21 +88,21 @@ describe("background.js – spaces toolbar registration", () => {
 
   test("points the space panel at the sidebar HTML page", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     const [, defaultUrl] = messenger.spaces.create.mock.calls[0];
     expect(defaultUrl).toBe("sidebar/sidebar.html");
   });
 
   test("sets the space title to 'OpenVidu Meet'", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     const [, , props] = messenger.spaces.create.mock.calls[0];
     expect(props).toMatchObject({ title: "OpenVidu Meet" });
   });
 
   test("provides defaultIcons as an object with 16 and 32 px entries", async () => {
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     const [, , props] = messenger.spaces.create.mock.calls[0];
     expect(props.defaultIcons).toEqual({
       "16": "icons/icon.svg",
@@ -94,15 +112,15 @@ describe("background.js – spaces toolbar registration", () => {
 
   test("does not throw when messenger.spaces.create() rejects", async () => {
     messenger.spaces.create.mockRejectedValueOnce(new Error("Permission denied"));
-    expect(() => loadBackground()).not.toThrow();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    loadBackground();
+    await expect(triggerStartup()).resolves.toBeUndefined();
   });
 
   test("logs errors from spaces.create() to the console", async () => {
     const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
     messenger.spaces.create.mockRejectedValueOnce(new Error("Permission denied"));
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     expect(consoleError).toHaveBeenCalledWith(
       expect.stringContaining("[OpenVidu Meet]"),
       expect.any(Error)
@@ -114,7 +132,7 @@ describe("background.js – spaces toolbar registration", () => {
     const consoleError = jest.spyOn(console, "error").mockImplementation(() => {});
     messenger.spaces.query.mockRejectedValueOnce(new Error("Query failed"));
     loadBackground();
-    await new Promise((resolve) => setTimeout(resolve, 0));
+    await triggerStartup();
     expect(consoleError).toHaveBeenCalledWith(
       expect.stringContaining("[OpenVidu Meet]"),
       expect.any(Error)
@@ -131,17 +149,32 @@ describe("background.js – install handler", () => {
     expect(browser.runtime.onInstalled.addListener).toHaveBeenCalledTimes(1);
   });
 
-  test("opens the options page when reason is 'install'", () => {
+  test("registers an onStartup listener", () => {
     loadBackground();
-    const [listener] = browser.runtime.onInstalled.addListener.mock.calls[0];
-    listener({ reason: "install" });
+    expect(browser.runtime.onStartup.addListener).toHaveBeenCalledTimes(1);
+  });
+
+  test("opens the options page when reason is 'install'", async () => {
+    loadBackground();
+    await triggerInstall("install");
     expect(browser.runtime.openOptionsPage).toHaveBeenCalledTimes(1);
   });
 
-  test("does not open the options page on 'update'", () => {
+  test("does not open the options page on 'update'", async () => {
     loadBackground();
-    const [listener] = browser.runtime.onInstalled.addListener.mock.calls[0];
-    listener({ reason: "update" });
+    await triggerInstall("update");
     expect(browser.runtime.openOptionsPage).not.toHaveBeenCalled();
+  });
+
+  test("registers the space on install", async () => {
+    loadBackground();
+    await triggerInstall("install");
+    expect(messenger.spaces.create).toHaveBeenCalledTimes(1);
+  });
+
+  test("registers the space on update", async () => {
+    loadBackground();
+    await triggerInstall("update");
+    expect(messenger.spaces.create).toHaveBeenCalledTimes(1);
   });
 });
