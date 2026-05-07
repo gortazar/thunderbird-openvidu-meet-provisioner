@@ -87,8 +87,8 @@ describe("background.js – spaces toolbar registration", () => {
     await new Promise((resolve) => setTimeout(resolve, 0));
     const [, , props] = messenger.spaces.create.mock.calls[0];
     expect(props.defaultIcons).toEqual({
-      "16": "icons/icon-16.svg",
-      "32": "icons/icon-32.svg",
+      "16": "icons/icon.svg",
+      "32": "icons/icon.svg",
     });
   });
 
