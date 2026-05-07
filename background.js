@@ -22,8 +22,8 @@ if (typeof messenger !== "undefined" && typeof messenger.spaces?.create === "fun
         await messenger.spaces.create("openvidu-meet", "sidebar/sidebar.html", {
           title: "OpenVidu Meet",
           defaultIcons: {
-            "16": "icons/icon-16.svg",
-            "32": "icons/icon-32.svg",
+            "16": "icons/icon.svg",
+            "32": "icons/icon.svg",
           },
         });
       }
