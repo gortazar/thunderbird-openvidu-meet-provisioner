@@ -16,10 +16,6 @@
     "http://*/*",
     "https://*/*"
   ],
-  "sidebar_action": {
-    "default_title": "OpenVidu Meet",
-    "default_panel": "sidebar/sidebar.html"
-  },
   "options_page": "options/options.html",
   "options_ui": {
     "page": "options/options.html",

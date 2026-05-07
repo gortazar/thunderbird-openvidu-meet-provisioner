@@ -1,8 +1,8 @@
 /**
  * tests/unit/manifest.test.js
  *
- * Unit tests for manifest.json options page configuration.
- * Verifies options_page is declared and aligned with options_ui.page.
+ * Unit tests for manifest.json Thunderbird compatibility settings.
+ * Verifies options page wiring and absence of unsupported sidebar_action key.
  */
 
 "use strict";
@@ -16,5 +16,11 @@ describe("manifest options configuration", () => {
 
   test("keeps options_ui page in sync with options_page", () => {
     expect(manifest.options_ui.page).toBe(manifest.options_page);
+  });
+});
+
+describe("manifest Thunderbird compatibility", () => {
+  test("does not declare sidebar_action (unsupported in Thunderbird spaces UI)", () => {
+    expect(manifest.sidebar_action).toBeUndefined();
   });
 });
