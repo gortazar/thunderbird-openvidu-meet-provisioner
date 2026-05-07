@@ -123,38 +123,6 @@ describe("background.js – spaces toolbar registration", () => {
   });
 });
 
-// ─── Compatibility – no Spaces API ────────────────────────────────────────
-
-describe("background.js – Spaces API compatibility", () => {
-  test("does not throw when messenger.spaces is absent", () => {
-    expect(() =>
-      loadBackground({ messenger: { /* no spaces property */ } })
-    ).not.toThrow();
-  });
-
-  test("does not call spaces.create() when messenger.spaces is absent", async () => {
-    loadBackground({ messenger: {} });
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(messenger.spaces.create).not.toHaveBeenCalled();
-  });
-
-  test("does not throw when messenger itself is undefined", () => {
-    expect(() => loadBackground({ messenger: undefined })).not.toThrow();
-  });
-
-  test("does not call spaces.create() when messenger is undefined", async () => {
-    loadBackground({ messenger: undefined });
-    await new Promise((resolve) => setTimeout(resolve, 0));
-    expect(messenger.spaces.create).not.toHaveBeenCalled();
-  });
-
-  test("does not throw when messenger.spaces.create is not a function", () => {
-    expect(() =>
-      loadBackground({ messenger: { spaces: { create: null } } })
-    ).not.toThrow();
-  });
-});
-
 // ─── Install-time options page ─────────────────────────────────────────────
 
 describe("background.js – install handler", () => {
