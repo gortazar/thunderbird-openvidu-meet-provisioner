@@ -1,3 +1,10 @@
+/**
+ * tests/unit/manifest.test.js
+ *
+ * Unit tests for manifest.json options page configuration.
+ * Verifies options_page is declared and aligned with options_ui.page.
+ */
+
 "use strict";
 
 const manifest = require("../../manifest.json");
