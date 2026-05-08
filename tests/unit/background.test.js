@@ -45,7 +45,7 @@ beforeEach(() => {
   jest.clearAllMocks();
   // Re-arm the mocks so Promises resolve cleanly on each test run.
   messenger.spaces.query.mockResolvedValue([]);
-  messenger.spaces.create.mockResolvedValue({ id: 1, name: "openvidu-meet" });
+  messenger.spaces.create.mockResolvedValue({ id: 1, name: "openvidu" });
 });
 
 // ─── Space registration ────────────────────────────────────────────────────
@@ -54,13 +54,13 @@ describe("background.js – spaces toolbar registration", () => {
   test("queries existing spaces before creating (onStartup)", async () => {
     loadBackground();
     await triggerStartup();
-    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu-meet" });
+    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu" });
   });
 
   test("queries existing spaces before creating (onInstalled)", async () => {
     loadBackground();
     await triggerInstall("update");
-    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu-meet" });
+    expect(messenger.spaces.query).toHaveBeenCalledWith({ name: "openvidu" });
   });
 
   test("calls messenger.spaces.create() when no existing space is found", async () => {
@@ -70,17 +70,17 @@ describe("background.js – spaces toolbar registration", () => {
   });
 
   test("skips messenger.spaces.create() when space already exists", async () => {
-    messenger.spaces.query.mockResolvedValue([{ id: 1, name: "openvidu-meet" }]);
+    messenger.spaces.query.mockResolvedValue([{ id: 1, name: "openvidu" }]);
     loadBackground();
     await triggerStartup();
     expect(messenger.spaces.create).not.toHaveBeenCalled();
   });
 
-  test("registers the space with name 'openvidu-meet'", async () => {
+  test("registers the space with name 'openvidu'", async () => {
     loadBackground();
     await triggerStartup();
     expect(messenger.spaces.create).toHaveBeenCalledWith(
-      "openvidu-meet",
+      "openvidu",
       expect.any(String),
       expect.any(Object)
     );
