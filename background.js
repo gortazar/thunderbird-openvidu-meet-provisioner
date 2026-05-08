@@ -20,9 +20,9 @@ async function registerSpace() {
   try {
     // Query first to avoid a duplicate-space error when the background
     // script is reloaded in developer mode without restarting Thunderbird.
-    const existing = await messenger.spaces.query({ name: "openvidu-meet" });
+    const existing = await messenger.spaces.query({ name: "openvidu" });
     if (existing.length === 0) {
-      await messenger.spaces.create("openvidu-meet", "sidebar/sidebar.html", {
+      await messenger.spaces.create("openvidu", "sidebar/sidebar.html", {
         title: "OpenVidu Meet",
         defaultIcons: {
           "16": "icons/icon.svg",
