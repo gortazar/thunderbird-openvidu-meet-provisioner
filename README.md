@@ -1,5 +1,14 @@
 # thunderbird-openvidu-meet-provisioner
 
+> [!IMPORTANT]
+> **This repository has moved and is archived.** The add-on now lives in
+> [gortazar/thunderbird-extensions/openvidu-meet](https://github.com/gortazar/thunderbird-extensions/tree/main/openvidu-meet),
+> where development continues (including the full commit history).
+> New versions are published on the
+> [thunderbird-extensions releases page](https://github.com/gortazar/thunderbird-extensions/releases)
+> as `openvidu-meet-v<version>`. It keeps the same add-on ID, so existing
+> installations can be updated by installing the new `.xpi`.
+
 A Thunderbird WebExtension that integrates [OpenVidu Meet](https://openvidu.io/latest/meet/) videoconference rooms directly into Thunderbird.
 
 ## Features
